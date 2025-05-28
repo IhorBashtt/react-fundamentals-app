@@ -1,5 +1,4 @@
 import React from "react";
-
 import styles from "./styles.module.css";
 
 // Module 1:
@@ -13,8 +12,8 @@ export const Button = ({
 }) => (
   <button
     className={styles.button}
-    onClick={handleClick}
     data-testid={dataTestId}
+    onClick={handleClick}
   >
     {buttonText}
   </button>
