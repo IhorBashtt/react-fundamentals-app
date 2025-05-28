@@ -1,3 +1,7 @@
+import React, { useState, useEffect } from "react";
+import styles from "./styles.module.css"; // Создайте или настройте стили по необходимости
+import { Input, Button } from "../../common";
+
 // // Module 1. You don't need to do anything with this component (we had to comment this component for 1st module tests)
 
 // // Module 2.
@@ -14,7 +18,7 @@
 // // ** TASK DESCRIPTION ** - https://react-fundamentals-tasks.vercel.app/docs/module-2/home-task/components#add-new-course
 
 // // Module 3.
-// // * remove props - authorsList, createCourse, createAuthor 
+// // * remove props - authorsList, createCourse, createAuthor
 // // * use selector from store/selectors.js to get authorsList from store
 // // * save new course to the store. Use action 'saveCourse' from 'src/store/slices/coursesSlice'
 // // * save new author to the store. Use action 'saveAuthor' from 'src/store/slices/authorsSlice'
@@ -109,3 +113,64 @@
 //     </div>
 //   );
 // };
+const CourseForm = ({ course, onSave, onCancel }) => {
+  const [title, setTitle] = useState(course.title || "");
+  const [description, setDescription] = useState(course.description || "");
+  const [duration, setDuration] = useState(course.duration || "");
+
+  useEffect(() => {
+    setTitle(course.title || "");
+    setDescription(course.description || "");
+    setDuration(course.duration || "");
+  }, [course]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!title.trim() || !description.trim() || !duration) {
+      alert("Please fill in all fields");
+      return;
+    }
+    // Подготавливаем обновлённые данные курса
+    const updatedCourse = {
+      ...course,
+      title,
+      description,
+      duration: Number(duration),
+      // Если это новый курс, выставляем дату создания; для обновляемых курс остается прежней
+      creationDate: course.creationDate || new Date().toISOString(),
+    };
+    onSave(updatedCourse);
+  };
+
+  return (
+    <div className={styles.formContainer} data-testid="courseForm">
+      <h2>{course.id ? "Update Course" : "Add New Course"}</h2>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <Input
+          labelText="Title:"
+          placeholderText="Enter course title"
+          onChange={(e) => setTitle(e.target.value)}
+          data-testid="titleInput"
+        />
+        <Input
+          labelText="Description:"
+          placeholderText="Enter course description"
+          onChange={(e) => setDescription(e.target.value)}
+          data-testid="descriptionInput"
+        />
+        <Input
+          labelText="Duration (minutes):"
+          placeholderText="Enter course duration"
+          onChange={(e) => setDuration(e.target.value)}
+          data-testid="durationInput"
+        />
+        <div className={styles.buttonGroup}>
+          <Button buttonText="SAVE" type="submit" />
+          <Button buttonText="CANCEL" handleClick={onCancel} />
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default CourseForm;
