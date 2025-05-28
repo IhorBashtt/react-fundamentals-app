@@ -1,6 +1,7 @@
 import React from "react";
-
 import styles from "./styles.module.css";
+import { Logo } from "./components/Logo";
+import { Button } from "../../common";
 
 // Module 1:
 // * add Logo and Button components
@@ -31,15 +32,27 @@ import styles from "./styles.module.css";
 // *proposed cases for unit tests:
 //   ** Header should have logo and user's name.
 
-export const Header = () => {
-  // write your code here
+export const Header = ({ onSearch }) => {
+  const handleSearchInput = (e) => {
+    onSearch(e.target.value);
+  };
 
   return (
     <div className={styles.headerContainer}>
-      // use Logo component
+      <Logo />
+      {/* Поисковая строка */}
+      <div className={styles.searchContainer}>
+        <input
+          type="text"
+          placeholder="Search courses..."
+          onChange={handleSearchInput}
+          className={styles.searchInput}
+          data-testid="searchInput"
+        />
+      </div>
       <div className={styles.userContainer}>
         <p className={styles.userName}>Harry Potter</p>
-        // reuse Button component for 'Login / Logout' button
+        <Button buttonText="LOGOUT" />
       </div>
     </div>
   );
