@@ -1,6 +1,7 @@
 import React from "react";
-
 import styles from "./styles.module.css";
+import { Button } from "../../common";
+import { CourseCard } from "./components/CourseCard";
 
 // Module 1:
 // * render list of components using 'CourseCard' component for each course
@@ -32,18 +33,62 @@ import styles from "./styles.module.css";
 //   ** Courses should display amount of CourseCard equal length of courses array.
 //   ** CourseForm should be shown after a click on the "Add new course" button.
 
-export const Courses = ({ coursesList, authorsList, handleShowCourse }) => {
-  // write your code here
+const EmptyCourseList = ({ onAddClick }) => {
+  return (
+    <div className={styles.empty} data-testid="emptyContainer">
+      <h2>Your List Is Empty</h2>
+      <p>Please use "add new course" button to add your first course</p>
+      <div className={styles.buttonContainer}>
+        <Button
+          buttonText="ADD NEW COURSE"
+          data-testid="addCourse"
+          handleClick={onAddClick}
+        />
+      </div>
+    </div>
+  );
+};
 
-  // for EmptyCourseList component container use data-testid="emptyContainer" attribute
-  // for button in EmptyCourseList component add data-testid="addCourse" attribute
+// Основной компонент Courses
+export const Courses = ({
+  coursesList,
+  authorsList,
+  handleShowCourse,
+  handleDeleteCourse,
+  handleUpdateCourse,
+  onAddClick,
+  searchQuery,
+}) => {
+  // Фильтруем курсы по названию (без учета регистра)
+  const filteredCourses = coursesList.filter((course) =>
+    course.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  if (filteredCourses.length === 0) {
+    return <EmptyCourseList onAddClick={onAddClick} />;
+  }
 
   return (
     <>
-      <div className={styles.panel}>
-        // reuse Button component for 'ADD NEW COURSE' button
+      <div className={styles.panel} key="add-new-course">
+        <Button
+          buttonText="ADD NEW COURSE"
+          data-testid="addCourse"
+          handleClick={onAddClick}
+        />
       </div>
-      // use '.map' array method to render all courses. Use CourseCard component
+      {filteredCourses.map((course) => (
+        <CourseCard
+          key={course.id}
+          course={course}
+          authorsList={authorsList}
+          handleShowCourse={handleShowCourse}
+          handleDeleteCourse={handleDeleteCourse}
+          handleUpdateCourse={handleUpdateCourse}
+        />
+      ))}
     </>
   );
 };
+
+export { EmptyCourseList };
